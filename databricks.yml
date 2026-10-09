@@ -4,7 +4,7 @@ bundle:
 variables:
   catalog:
     description: Target Unity Catalog catalog
-    default: appletvshow_dev
+    default: appletvshow
 
 resources:
   jobs:
@@ -76,14 +76,5 @@ targets:
   dev:
     mode: development
     default: true
-    variables:
-      catalog: appletvshow_dev
-
-  prod:
-    mode: production
-    git:
-      branch: main
-    workspace:
-      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/prod
     variables:
       catalog: appletvshow
