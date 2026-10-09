@@ -76,7 +76,7 @@ display(spark.table(f"{CATALOG}.gold.shows_by_category"))
 # COMMAND ----------
 
 run(f"""
-CREATE OR REPLACE MATERIALIZED VIEW {CATALOG}.gold.mv_genre_summary
+CREATE OR REPLACE VIEW {CATALOG}.gold.mv_genre_summary
   -- SCHEDULE CRON '0 0 7 * * ?' AT TIME ZONE 'America/New_York'
   COMMENT 'Shows per genre (one show can count under several genres)'
 AS SELECT genre_item AS genre, count(DISTINCT title) AS shows
