@@ -11,7 +11,11 @@
 
 from pyspark.sql import functions as F
 
-CATALOG = "appletvshow"
+#CATALOG = "appletvshow"
+dbutils.widgets.text("catalog", "appletvshow")
+CATALOG = dbutils.widgets.get("catalog")
+spark.sql(f"USE CATALOG {CATALOG}")
+
 WIKI = f"/Volumes/{CATALOG}/bronze/landing/wiki"
 CKPT = f"/Volumes/{CATALOG}/bronze/checkpoints/wiki"
 

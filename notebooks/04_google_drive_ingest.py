@@ -35,7 +35,11 @@ import datetime
 import os
 import re
 
-CATALOG = "appletvshow"
+#CATALOG = "appletvshow"
+dbutils.widgets.text("catalog", "appletvshow")
+CATALOG = dbutils.widgets.get("catalog")
+spark.sql(f"USE CATALOG {CATALOG}")
+
 CONN = "googledrive"
 TEMP_FOLDER_URL = "https://drive.google.com/drive/folders/0B0ehKxnPur13QmpjbnlqTDVLMlU"   # <-- paste your Temp folder URL
 FILE_NAME = "Mridul.xlsx"                                                   # exact name, case-sensitive

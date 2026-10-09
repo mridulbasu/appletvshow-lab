@@ -12,7 +12,11 @@
 
 from pyspark.sql import functions as F
 
-CATALOG = "appletvshow"
+#CATALOG = "appletvshow"
+dbutils.widgets.text("catalog", "appletvshow")
+CATALOG = dbutils.widgets.get("catalog")
+spark.sql(f"USE CATALOG {CATALOG}")
+
 shows = spark.read.table(f"{CATALOG}.silver.wiki_shows")
 
 existing = {r.tableName for r in spark.sql(f"SHOW TABLES IN {CATALOG}.silver").collect()}

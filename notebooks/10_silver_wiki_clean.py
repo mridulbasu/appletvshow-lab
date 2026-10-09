@@ -25,6 +25,7 @@ from pyspark.sql import functions as F, Window
 #CATALOG = "appletvshow"
 dbutils.widgets.text("catalog", "appletvshow")
 CATALOG = dbutils.widgets.get("catalog")
+spark.sql(f"USE CATALOG {CATALOG}")
 
 BRONZE = f"{CATALOG}.bronze.wiki_current_programming"
 SILVER = f"{CATALOG}.silver.wiki_shows"

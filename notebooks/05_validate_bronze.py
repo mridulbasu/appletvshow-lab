@@ -9,7 +9,11 @@
 
 # COMMAND ----------
 
-CATALOG = "appletvshow"
+#CATALOG = "appletvshow"
+dbutils.widgets.text("catalog", "appletvshow")
+CATALOG = dbutils.widgets.get("catalog")
+spark.sql(f"USE CATALOG {CATALOG}")
+
 tables = {
     "manual_apple_tv_show": "manual_load",
     "wiki_current_programming": "wiki",

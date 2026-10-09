@@ -10,7 +10,11 @@
 
 from pyspark.sql import functions as F, Window
 
-CATALOG = "appletvshow"
+#CATALOG = "appletvshow"
+dbutils.widgets.text("catalog", "appletvshow")
+CATALOG = dbutils.widgets.get("catalog")
+spark.sql(f"USE CATALOG {CATALOG}")
+
 shows = spark.read.table(f"{CATALOG}.silver.wiki_shows")
 
 # COMMAND ----------
