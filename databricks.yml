@@ -14,7 +14,6 @@ resources:
         - name: catalog
           default: ${var.catalog}
       tasks:
-      tasks:
         - task_key: setup_and_map
           notebook_task:
             notebook_path: ./notebooks/00_setup_and_map.py
