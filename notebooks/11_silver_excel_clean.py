@@ -22,7 +22,11 @@
 import re
 from pyspark.sql import functions as F, Window
 
-CATALOG = "appletvshow"
+#CATALOG = "appletvshow"
+dbutils.widgets.text("catalog", "appletvshow")
+CATALOG = dbutils.widgets.get("catalog")
+spark.sql(f"USE CATALOG {CATALOG}")
+
 SOURCES = {"manual_apple_tv_show": "manual_shows", "gdrive_mridul": "gdrive_mridul"}
 AUDIT = {"_source_system", "_ingest_ts", "_source_file", "_snapshot_date", "_rescued_data"}
 # Set this if auto-detection picks the wrong column, e.g. "show_name"; None = auto

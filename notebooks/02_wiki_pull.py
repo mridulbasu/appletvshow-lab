@@ -22,7 +22,7 @@
 
 # COMMAND ----------
 
-# MAGIC %pip install lxml==5.3.0
+#%pip install lxml==5.3.0
 
 # COMMAND ----------
 
@@ -42,7 +42,11 @@ from io import StringIO
 import pandas as pd
 from bs4 import BeautifulSoup
 
-CATALOG = "appletvshow"
+#CATALOG = "appletvshow"
+dbutils.widgets.text("catalog", "appletvshow")
+CATALOG = dbutils.widgets.get("catalog")
+spark.sql(f"USE CATALOG {CATALOG}")
+
 WIKI = f"/Volumes/{CATALOG}/bronze/landing/wiki"
 assert os.path.isdir(WIKI), "Run 00_setup_and_map first"
 

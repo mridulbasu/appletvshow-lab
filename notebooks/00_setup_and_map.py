@@ -35,7 +35,10 @@
 
 # COMMAND ----------
 
-CATALOG = "appletvshow"   # stored lowercase whatever case you type
+#CATALOG = "appletvshow"   # stored lowercase whatever case you type
+dbutils.widgets.text("catalog", "appletvshow")
+CATALOG = dbutils.widgets.get("catalog")
+spark.sql(f"USE CATALOG {CATALOG}")
 
 spark.sql(f"CREATE CATALOG IF NOT EXISTS {CATALOG} COMMENT 'Apple TV lab - Section 2 ingestion practice'")
 for schema in ["bronze", "silver", "gold"]:

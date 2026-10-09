@@ -25,7 +25,11 @@
 import time
 from pyspark.sql import functions as F, Window
 
-CATALOG = "appletvshow"
+#CATALOG = "appletvshow"
+dbutils.widgets.text("catalog", "appletvshow")
+CATALOG = dbutils.widgets.get("catalog")
+spark.sql(f"USE CATALOG {CATALOG}")
+
 N_EVENTS = 5_000_000
 
 for k in ["spark.sql.shuffle.partitions", "spark.sql.autoBroadcastJoinThreshold",

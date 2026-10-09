@@ -1,0 +1,58 @@
+      tasks:
+        - task_key: setup_and_map
+          notebook_task:
+            notebook_path: ./notebooks/00_setup_and_map.py
+
+        # ---- Bronze ----
+        - task_key: google_drive
+          depends_on: [{task_key: setup_and_map}]
+          notebook_task:
+            notebook_path: ./notebooks/04_google_drive_ingest.py
+
+        - task_key: manual_load
+          depends_on: [{task_key: setup_and_map}]
+          notebook_task:
+            notebook_path: ./notebooks/01_manual_load_excel.py
+
+        - task_key: wiki_pull
+          depends_on: [{task_key: setup_and_map}]
+          notebook_task:
+            notebook_path: ./notebooks/02_wiki_pull.py
+
+        - task_key: wiki_autoload
+          depends_on: [{task_key: wiki_pull}]
+          notebook_task:
+            notebook_path: ./notebooks/03_wiki_autoload.py
+
+        - task_key: validate
+          run_if: ALL_DONE
+          depends_on:
+            - {task_key: google_drive}
+            - {task_key: manual_load}
+            - {task_key: wiki_autoload}
+          notebook_task:
+            notebook_path: ./notebooks/05_validate_bronze.py
+
+        # ---- Silver ----
+        - task_key: silver_wiki_clean
+          depends_on: [{task_key: validate}]
+          notebook_task:
+            notebook_path: ./notebooks/10_silver_wiki_clean.py
+
+        - task_key: silver_excel_clean
+          depends_on: [{task_key: validate}]
+          notebook_task:
+            notebook_path: ./notebooks/11_silver_excel_clean.py
+
+        # ---- Transform ----
+        - task_key: joins_unions
+          depends_on:
+            - {task_key: silver_wiki_clean}
+            - {task_key: silver_excel_clean}
+          notebook_task:
+            notebook_path: ./notebooks/12_joins_unions.py
+
+        - task_key: reshape_dedup_agg
+          depends_on: [{task_key: joins_unions}]
+          notebook_task:
+            notebook_path: ./notebooks/13_reshape_dedup_agg.py

@@ -22,7 +22,11 @@
 
 import re
 
-CATALOG = "appletvshow"
+#CATALOG = "appletvshow"
+dbutils.widgets.text("catalog", "appletvshow")
+CATALOG = dbutils.widgets.get("catalog")
+spark.sql(f"USE CATALOG {CATALOG}")
+
 SRC = f"/Volumes/{CATALOG}/bronze/landing/manual_load/"
 TARGET = f"{CATALOG}.bronze.manual_apple_tv_show"
 
