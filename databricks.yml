@@ -1,3 +1,10 @@
+bundle:
+  name: appletvshow-lab
+
+resources:
+  jobs:
+    appletvshow_lab_job:
+      name: appletvshow-lab
       tasks:
         - task_key: setup_and_map
           notebook_task:
@@ -56,3 +63,8 @@
           depends_on: [{task_key: joins_unions}]
           notebook_task:
             notebook_path: ./notebooks/13_reshape_dedup_agg.py
+
+targets:
+  dev:
+    default: true
+    mode: development
