@@ -22,7 +22,10 @@
 
 from pyspark.sql import functions as F, Window
 
-CATALOG = "appletvshow"
+#CATALOG = "appletvshow"
+dbutils.widgets.text("catalog", "appletvshow")
+CATALOG = dbutils.widgets.get("catalog")
+
 BRONZE = f"{CATALOG}.bronze.wiki_current_programming"
 SILVER = f"{CATALOG}.silver.wiki_shows"
 
