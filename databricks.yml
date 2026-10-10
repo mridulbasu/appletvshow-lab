@@ -66,6 +66,18 @@ resources:
           notebook_task:
             notebook_path: ./notebooks/10_silver_wiki_clean.py
 
+        - task_key: category_snapshots
+          depends_on: [{task_key: silver_wiki_clean}]
+          for_each_task:
+            inputs: '["Animation", "Comedy", "Drama", "Kids & family", "Unscripted"]'   # TBD: exact names from step 1
+            concurrency: 2
+            task:
+              task_key: category_snapshot_iter
+              notebook_task:
+                notebook_path: ./notebooks/17_category_snapshot.py
+                base_parameters:
+                  category: "{{input}}"
+
         - task_key: silver_excel_clean
           depends_on: 
           - {task_key: validate}  
