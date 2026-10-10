@@ -75,16 +75,16 @@ display(spark.table(f"{CATALOG}.gold.shows_by_category"))
 
 # COMMAND ----------
 
-run(f"""
-CREATE OR REPLACE VIEW {CATALOG}.gold.mv_genre_summary
-  -- SCHEDULE CRON '0 0 7 * * ?' AT TIME ZONE 'America/New_York'
-  COMMENT 'Shows per genre (one show can count under several genres)'
-AS SELECT genre_item AS genre, count(DISTINCT title) AS shows
-   FROM {CATALOG}.silver.wiki_show_genres
-   GROUP BY genre_item
-""", "materialized view")
-run(f"REFRESH MATERIALIZED VIEW {CATALOG}.gold.mv_genre_summary", "refresh MV")
-display(spark.sql(f"SELECT * FROM {CATALOG}.gold.mv_genre_summary ORDER BY shows DESC"))
+#run(f"""
+#CREATE OR REPLACE VIEW {CATALOG}.gold.mv_genre_summary
+#  -- SCHEDULE CRON '0 0 7 * * ?' AT TIME ZONE 'America/New_York'
+#  COMMENT 'Shows per genre (one show can count under several genres)'
+#AS SELECT genre_item AS genre, count(DISTINCT title) AS shows
+#   FROM {CATALOG}.silver.wiki_show_genres
+#   GROUP BY genre_item
+#""", "materialized view")
+#run(f"REFRESH MATERIALIZED VIEW {CATALOG}.gold.mv_genre_summary", #"refresh MV")
+#display(spark.sql(f"SELECT * FROM {CATALOG}.gold.mv_genre_summary #ORDER BY shows DESC"))
 
 # COMMAND ----------
 
@@ -96,15 +96,15 @@ display(spark.sql(f"SELECT * FROM {CATALOG}.gold.mv_genre_summary ORDER BY shows
 
 # COMMAND ----------
 
-run(f"""
-CREATE OR REFRESH STREAMING TABLE {CATALOG}.gold.st_wiki_loads
-COMMENT 'One row per show per pulled Wikipedia revision (incremental)'
-AS SELECT category, title, source_revid, _ingest_ts
-   FROM STREAM {CATALOG}.bronze.wiki_current_programming
-""", "streaming table")
-display(spark.sql(f"""
-  SELECT source_revid, count(*) AS shows, max(_ingest_ts) AS loaded_at
-  FROM {CATALOG}.gold.st_wiki_loads GROUP BY source_revid ORDER BY source_revid DESC"""))
+#run(f"""
+#CREATE OR REFRESH STREAMING TABLE {CATALOG}.gold.st_wiki_loads
+#COMMENT 'One row per show per pulled Wikipedia revision (incremental)'
+#AS SELECT category, title, source_revid, _ingest_ts
+#   FROM STREAM {CATALOG}.bronze.wiki_current_programming
+#""", "streaming table")
+#display(spark.sql(f"""
+#  SELECT source_revid, count(*) AS shows, max(_ingest_ts) AS loaded_at
+#  FROM {CATALOG}.gold.st_wiki_loads GROUP BY source_revid ORDER BY #source_revid DESC"""))
 
 # COMMAND ----------
 
