@@ -67,8 +67,9 @@ resources:
             notebook_path: ./notebooks/10_silver_wiki_clean.py
 
         - task_key: silver_excel_clean
-          #depends_on: [{task_key: validate}]
-          depends_on: [{task_key: gdrive_check, outcome: "true"}]
+          depends_on: 
+          - {task_key: validate}  
+          - {task_key: gdrive_check, outcome: "true"}
           notebook_task:
             notebook_path: ./notebooks/11_silver_excel_clean.py
 
