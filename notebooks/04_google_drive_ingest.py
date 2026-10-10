@@ -71,7 +71,7 @@ matches = (spark.read.format("binaryFile")
 
 found = len(matches) > 0
 try:
-    dbutils.jobs.taskValues.set(key="gdrive_file_found", value=found)   # lets a Job If/else task branch on it (Section 4)
+    dbutils.jobs.taskValues.set(key="gdrive_file_found", value=found.lower())   # True/False lets a Job If/else task branch on it (Section 4)
 except Exception:
     pass                                                                # not running as a Job task
 

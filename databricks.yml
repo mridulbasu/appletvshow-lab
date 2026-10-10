@@ -24,6 +24,18 @@ resources:
           notebook_task:
             notebook_path: ./notebooks/04_google_drive_ingest.py
 
+        - task_key: gdrive_check
+          depends_on: [{task_key: google_drive}]
+          condition_task:
+            op: EQUAL_TO
+            left: "{{tasks.google_drive.values.gdrive_file_found}}"
+            right: "true"            # TBD: match the actual output in step 3
+
+        - task_key: gdrive_none
+          depends_on: [{task_key: gdrive_check, outcome: "false"}]
+          notebook_task:
+            notebook_path: ./notebooks/04b_no_gdrive_file.ipynb 
+
         - task_key: manual_load
           depends_on: [{task_key: setup_and_map}]
           notebook_task:
@@ -55,7 +67,8 @@ resources:
             notebook_path: ./notebooks/10_silver_wiki_clean.py
 
         - task_key: silver_excel_clean
-          depends_on: [{task_key: validate}]
+          #depends_on: [{task_key: validate}]
+          depends_on: [{task_key: gdrive_check, outcome: "true"}]
           notebook_task:
             notebook_path: ./notebooks/11_silver_excel_clean.py
 
