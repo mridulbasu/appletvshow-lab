@@ -130,18 +130,23 @@ display(spark.sql(f"DESCRIBE HISTORY {TARGET}").select("version", "timestamp", "
 
 # COMMAND ----------
 
-hist = spark.sql(f"DESCRIBE HISTORY {TARGET}").select("version", "operation", "operationMetrics")
-display(hist)
+from pyspark.sql import functions as F
 
-copy_versions = [r.version for r in hist.filter("operation LIKE '%COPY%'").orderBy("version", ascending=False).collect()]
-NEW_V = copy_versions[0]          # latest COPY INTO (override by hand if needed)
-OLD_V = NEW_V - 1                 # the version just before it
-
+CATALOG = "appletvshow"
+TARGET = f"{CATALOG}.bronze.manual_apple_tv_show"
 AUDIT = "_source_system, _ingest_ts, _source_file"
+
+# 1. History: what each version did, and whether it's still within the 7-day time-travel window
+hist = spark.sql(f"DESCRIBE HISTORY {TARGET}").select("version", "timestamp", "operation", "operationMetrics")
+display(hist.withColumn("within_7_days", F.col("timestamp") >= F.expr("current_timestamp() - INTERVAL 7 DAYS")))
+
+# 2. Rows added by the latest load that weren't in any earlier load (uses audit columns, no time travel)
 diff_sql = f"""
-SELECT * EXCEPT ({AUDIT}) FROM {TARGET} VERSION AS OF {NEW_V}
+SELECT * EXCEPT ({AUDIT}) FROM {TARGET}
+WHERE _ingest_ts = (SELECT max(_ingest_ts) FROM {TARGET})        -- latest load's rows
 EXCEPT
-SELECT * EXCEPT ({AUDIT}) FROM {TARGET} VERSION AS OF {OLD_V}
+SELECT * EXCEPT ({AUDIT}) FROM {TARGET}
+WHERE _ingest_ts < (SELECT max(_ingest_ts) FROM {TARGET})        -- all earlier loads' rows
 """
 print(diff_sql)
-display(spark.sql(diff_sql))      # rows present in NEW_V that weren't in OLD_V
+display(spark.sql(diff_sql))
