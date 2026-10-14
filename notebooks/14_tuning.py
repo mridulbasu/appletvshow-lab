@@ -30,7 +30,10 @@ dbutils.widgets.text("catalog", "appletvshow")
 CATALOG = dbutils.widgets.get("catalog")
 spark.sql(f"USE CATALOG {CATALOG}")
 
-N_EVENTS = 5_000_000
+#N_EVENTS = 5_000_000
+dbutils.widgets.text("n_events", "5000000")        # default; a job parameter with the same name overrides it
+N_EVENTS = int(dbutils.widgets.get("n_events"))
+print(f"N_EVENTS = {N_EVENTS:,}")
 
 for k in ["spark.sql.shuffle.partitions", "spark.sql.autoBroadcastJoinThreshold",
           "spark.default.parallelism", "spark.executor.memory", "spark.driver.memory"]:
